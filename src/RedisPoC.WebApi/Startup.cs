@@ -15,9 +15,9 @@ namespace RedisPoC.WebApi
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Diagnostics.HealthChecks;
+    using Microsoft.Extensions.Logging;
     using Microsoft.IdentityModel.Tokens;
     using Microsoft.OpenApi.Models;
-    using Serilog;
     using RedisPoC.Application;
     using RedisPoC.Application.Common;
     using RedisPoC.Infrastructure;
@@ -28,6 +28,7 @@ namespace RedisPoC.WebApi
     using RedisPoC.WebApi.Filters;
     using RedisPoC.WebApi.Models;
     using RedisPoC.WebApi.Services;
+    using Serilog;
 
     public class Startup
     {
@@ -95,13 +96,15 @@ namespace RedisPoC.WebApi
             });
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             app.Use(async (context, next) =>
             {
                 context.Request.PathBase = new PathString("/api");
                 await next();
             });
+
+            app.UseInfrastructure(this.Configuration, loggerFactory);
 
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RedisPoC WebApi v1"));
