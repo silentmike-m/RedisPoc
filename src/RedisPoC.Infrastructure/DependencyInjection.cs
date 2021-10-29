@@ -12,7 +12,6 @@
     using RedisPoC.Infrastructure.Redis;
     using RedisPoC.Infrastructure.Redis.Interfaces;
     using RedisPoC.Infrastructure.Redis.Services;
-    using StackExchange.Redis;
 
     [ExcludeFromCodeCoverage]
     public static class DependencyInjection
@@ -44,8 +43,7 @@
             try
             {
                 var redisOptions = configuration.GetSection(RedisOptions.SectionName).Get<RedisOptions>();
-                var connection = ConnectionMultiplexer.Connect($"{redisOptions.Server},password={redisOptions.Password}");
-                connection.Subscribe(logger);
+                CacheNotificationService.Subscribe(logger, redisOptions);
             }
             catch (Exception exception)
             {
