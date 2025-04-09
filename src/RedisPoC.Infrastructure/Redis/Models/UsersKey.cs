@@ -4,8 +4,8 @@
     using System.Collections.Generic;
     using RedisPoC.Application.Users.ViewModels;
 
-    internal sealed class UsersKey : CacheKey<IList<User>>
+    internal sealed record UsersKey : CacheKey<IList<User>>
     {
-        public Guid SystemId { get; init; } = default;
+        public Guid SystemId { get; init; } = Guid.Empty;
     }
 }
